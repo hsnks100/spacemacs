@@ -31,6 +31,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     go
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -66,7 +67,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(rtags js2-mode cmake-ide ctags-update color-identifiers-mode neotree)
+   dotspacemacs-additional-packages '(rtags js2-mode cmake-ide ctags-update)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -145,9 +146,9 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Inconsolata Nerd Font"
-                               :size 20
-                               :weight bold
+   dotspacemacs-default-font '("Inconsolata, Bold"
+                               :size 16
+                               :weight normal
                                :width normal
                                :powerline-scale 1.1)
    ;; The leader key
@@ -317,6 +318,29 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (setq c-basic-offset 4)
 
   )
+(defun create-tags (dir-name)
+  "Create tags file."
+  (interactive "DDirectory: ")
+  (eshell-command 
+   (format "find %s -type f -name \"*.[ch]\" -o -iname \"*.cpp\" | etags -" dir-name)))
+(defadvice find-tag (around refresh-etags activate)
+  "Rerun etags and reload tags if tag not found and redo find-tag.              
+   If buffer is modified, ask about save before running etags."
+  (let ((extension (file-name-extension (buffer-file-name))))
+    (condition-case err
+        ad-do-it
+      (error (and (buffer-modified-p)
+                  (not (ding))
+                  (y-or-n-p "Buffer is modified, save it? ")
+                  (save-buffer))
+             (er-refresh-etags extension)
+             ad-do-it))))
+(defun er-refresh-etags (&optional extension)
+  "Run etags on all peer files in current dir and reload them silently."
+  (interactive)
+  (shell-command (format "etags *.%s" (or extension "cpp")))
+  (let ((tags-revert-without-query nil))  ; don't query, revert silently          
+    (visit-tags-table default-directory nil)))
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -345,10 +369,11 @@ you should place your code here."
   (define-key evil-normal-state-map (kbd "<left>") 'evil-window-decrease-width)
   (define-key evil-normal-state-map (kbd "<f2>") 'neotree)
   (define-key evil-normal-state-map (kbd "g r") 'rgrep)
+  (define-key evil-normal-state-map (kbd "; a") 'ff-find-other-file)
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 4)
   (ctags-global-auto-update-mode)
-  (global-linum-mode)
+  (global-auto-complete-mode)
   (setq ctags-update-prompt-create-tags nil);you need manually create TAGS in your project 
   (define-key evil-normal-state-map (kbd ", f 1 5") (lambda() (interactive ) (find-file "/ssh:dire@175.123.88.40#10150|ssh:dire@aflxvsol15:/home/dire/livechat/src/UserAndChannel.cpp")))
 
