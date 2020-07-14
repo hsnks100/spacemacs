@@ -31,6 +31,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     html
      go
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -370,8 +371,10 @@ you should place your code here."
   (define-key evil-normal-state-map (kbd "<f2>") 'neotree)
   (define-key evil-normal-state-map (kbd "g r") 'rgrep)
   (define-key evil-normal-state-map (kbd "; a") 'ff-find-other-file)
-  (setq-default indent-tabs-mode nil)
-  (setq-default tab-width 4)
+  (setq c-default-style "bsd"
+        c-basic-offset 4
+        tab-width 4
+        indent-tabs-mode nil)
   (ctags-global-auto-update-mode)
   (global-auto-complete-mode)
   (setq ctags-update-prompt-create-tags nil);you need manually create TAGS in your project 
@@ -383,7 +386,9 @@ you should place your code here."
   (define-key evil-visual-state-map (kbd "k") 'evil-previous-visual-line)
   (define-key evil-normal-state-map ";a" 'ff-find-other-file)
   (define-key evil-normal-state-map (kbd "C-S-b") 'cmake-ide-compile)
-
+  (set-language-environment "Korean")
+  (prefer-coding-system 'utf-8)
+  (modify-syntax-entry ?_ "w")
   ;; (add-to-list 'tramp-default-proxies-alist
   ;;              '("175.123.88.40#10150:" nil "/ssh:dire@aflxvsol15:"))
 
@@ -394,13 +399,6 @@ you should place your code here."
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -408,4 +406,24 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline rtags restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint js2-mode indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag google-translate golden-ratio fuzzy flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired f evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word ctags-update company-statistics company column-enforce-mode color-identifiers-mode dash cmake-ide s levenshtein clean-aindent-mode bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell auto-complete popup))))
+    (web-mode tagedit slim-mode scss-mode sass-mode pug-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline rtags restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint js2-mode indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag google-translate golden-ratio fuzzy flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired f evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word ctags-update company-statistics company column-enforce-mode color-identifiers-mode dash cmake-ide s levenshtein clean-aindent-mode bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell auto-complete popup)))
+ '(safe-local-variable-values
+   (quote
+    ((eval let
+           ((root
+             (projectile-project-root)))
+           (message "PROJECT-BUILD-PATH: %S" root)
+           (let
+               ((build-dir
+                 (concat root "./build-TODO")))
+             (setq-local project-build-path build-dir)
+             (setq-local flycheck-clang-tidy-build-path build-dir)))
+     (cmake-ide-cmake-args . "-DCMAKE_BUILD_TYPE=Debug")))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+
